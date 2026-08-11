@@ -1,10 +1,15 @@
-name: Naver News Fetcher
+name: Naver News to GitHub Issues
 
 on:
-  workflow_dispatch: # 수동 실행 버튼 유지
+  workflow_dispatch: # 수동 실행
+
+# GitHub Actions가 Issue를 생성할 수 있도록 쓰기 권한 부여
+permissions:
+  issues: write
+  contents: read
 
 jobs:
-  run-scraper:
+  create-issue:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,6 +29,15 @@ jobs:
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-          # 👇 여기에 매일 검색할 키워드를 고정으로 입력하세요.
-          SEARCH_QUERY: '위스키' 
+          SEARCH_QUERY: '위스키'
+        # 스크립트가 실행되면 issue_title.txt 와 issue_body.md 파일이 생성됩니다.
         run: python main.py
+
+      - name: Create GitHub Issue
+        env:
+          # GITHUB_TOKEN은 GitHub이 자동으로 제공하므로 별도 세팅 불필요
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "$(cat issue_title.txt)" \
+            --body-file issue_body.md
