@@ -3,9 +3,8 @@ name: Naver News to GitHub Issues
 on:
   workflow_dispatch: # 수동 실행
 
-# GitHub Actions가 Issue를 생성할 수 있도록 쓰기 권한 부여
 permissions:
-  issues: write
+  issues: write # 이슈 생성 권한
   contents: read
 
 jobs:
@@ -29,15 +28,8 @@ jobs:
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-          SEARCH_QUERY: '위스키'
-        # 스크립트가 실행되면 issue_title.txt 와 issue_body.md 파일이 생성됩니다.
+          # 💡 이곳에 원하는 검색어를 쉼표로 구분하여 5개든 10개든 적어주세요.
+          SEARCH_QUERIES: '위스키, 바이브코딩, 해외여행'
+          # 파이썬 스크립트 내부에서 이슈를 생성할 수 있도록 토큰 권한 부여
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python main.py
-
-      - name: Create GitHub Issue
-        env:
-          # GITHUB_TOKEN은 GitHub이 자동으로 제공하므로 별도 세팅 불필요
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh issue create \
-            --title "$(cat issue_title.txt)" \
-            --body-file issue_body.md
