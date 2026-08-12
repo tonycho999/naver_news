@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import email.utils
 
 # 1. 환경 변수 세팅
-raw_queries = os.environ.get("SEARCH_QUERIES", "서서울호수공원")
+raw_queries = os.environ.get("SEARCH_QUERIES", "바이브코딩")
 SEARCH_QUERIES = [q.strip() for q in raw_queries.split(",") if q.strip()]
 
 CLIENT_ID = os.environ.get("NAVER_CLIENT_ID")
